@@ -4,26 +4,19 @@ cmake_minimum_required ( VERSION 2.8.12 )
 # project
 project ( wilton_winservice CXX )
 
-staticlib_add_subdirectory ( ${STATICLIB_DEPS}/external_jansson )
+# dependencies
 staticlib_add_subdirectory ( ${STATICLIB_DEPS}/external_popt )
-staticlib_add_subdirectory ( ${STATICLIB_DEPS}/staticlib_json )
-staticlib_add_subdirectory ( ${STATICLIB_DEPS}/staticlib_utils )
-staticlib_add_subdirectory ( ${STATICLIB_DEPS}/staticlib_tinydir )
 staticlib_add_subdirectory ( ${STATICLIB_DEPS}/staticlib_winservice )
 
-# dependencies check
 set ( ${PROJECT_NAME}_DEPS
         staticlib_winservice
         staticlib_json
+        staticlib_ranges
         staticlib_utils
         staticlib_tinydir
         popt )
-set ( ${PROJECT_NAME}_HEADER_DEPS
-        wilton_core
-        jansson )
         
 staticlib_pkg_check_modules ( ${PROJECT_NAME}_DEPS_PC REQUIRED ${PROJECT_NAME}_DEPS )
-staticlib_pkg_check_modules ( ${PROJECT_NAME}_HEADER_DEPS_PC REQUIRED ${PROJECT_NAME}_HEADER_DEPS )
 
 # executable
 configure_file ( ${CMAKE_CURRENT_LIST_DIR}/resources/${PROJECT_NAME}.rc
@@ -35,8 +28,8 @@ add_executable ( ${PROJECT_NAME}
         
 target_include_directories ( ${PROJECT_NAME} BEFORE PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/include
-        ${${PROJECT_NAME}_DEPS_PC_INCLUDE_DIRS}
-        ${${PROJECT_NAME}_HEADER_DEPS_PC_INCLUDE_DIRS} )
+        ${CMAKE_CURRENT_LIST_DIR}/../../core/include
+        ${${PROJECT_NAME}_DEPS_PC_INCLUDE_DIRS} )
         
 target_link_libraries ( ${PROJECT_NAME}
         wilton_core
