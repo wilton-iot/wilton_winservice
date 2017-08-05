@@ -113,11 +113,11 @@ std::vector<sl::json::field> collect_env_vars(char** envp) {
 }
 
 void init_wilton(wilton::launcher::winservice_config& sconf, char** envp) {
-    auto conf_obj = sconf.json_config.getattr_or_throw("wilton", "wilton");
-    auto conf_vec = conf_obj.as_object_or_throw("wilton");
+    auto& conf_obj = sconf.json_config.getattr_or_throw("wilton", "wilton");
+    auto& conf_vec = conf_obj.as_object_or_throw("wilton");
     auto env_vars = collect_env_vars(envp);
     conf_vec.emplace_back("environmentVariables", std::move(env_vars));
-    auto config = .dumps();
+    auto config = conf_obj.dumps();
     auto err = wiltoncall_init(config.c_str(), static_cast<int> (config.length()));
     if (nullptr != err) {
         auto msg = TRACEMSG(err);
