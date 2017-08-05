@@ -100,8 +100,24 @@ wilton::launcher::winservice_config load_config(const std::string& cpath) {
     }
 }
 
-void init_wilton(wilton::launcher::winservice_config& sconf) {
-    auto config = sconf.json_config.getattr_or_throw("wilton", "wilton").dumps();
+std::vector<sl::json::field> collect_env_vars(char** envp) {
+    auto res = std::vector<sl::json::field>();
+    for (char** el = envp; *el != '\0'; el++) {
+        auto var = std::string(*el);
+        auto parts = sl::utils::split(var, '=');
+        if (2 == parts.size()) {
+            res.emplace_back(parts.at(0), parts.at(1));
+        }
+    }
+    return res;
+}
+
+void init_wilton(wilton::launcher::winservice_config& sconf, char** envp) {
+    auto conf_obj = sconf.json_config.getattr_or_throw("wilton", "wilton");
+    auto conf_vec = conf_obj.as_object_or_throw("wilton");
+    auto env_vars = collect_env_vars(envp);
+    conf_vec.emplace_back("environmentVariables", std::move(env_vars));
+    auto config = .dumps();
     auto err = wiltoncall_init(config.c_str(), static_cast<int> (config.length()));
     if (nullptr != err) {
         auto msg = TRACEMSG(err);
@@ -191,7 +207,7 @@ void start_service_and_wait(const wilton::launcher::winservice_config& conf) {
 
 } // namespace
 
-int main(int argc, char** argv) {
+int main(int argc, char** argv, char** envp) {
 
     // parse command line
     wilton::launcher::winservice_options opts(argc, argv);
@@ -211,7 +227,7 @@ int main(int argc, char** argv) {
     
     try {        
         wilton::launcher::winservice_config conf = load_config(opts.config);
-        init_wilton(conf);
+        init_wilton(conf, envp);
 
         if (opts.install) {
             install(conf);
