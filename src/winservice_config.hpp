@@ -6,7 +6,7 @@
  */
 
 #ifndef WILTON_WINSERVICE_CONFIG_HPP
-#define	WILTON_WINSERVICE_CONFIG_HPP
+#define WILTON_WINSERVICE_CONFIG_HPP
 
 #include <cstdint>
 #include <string>
@@ -104,5 +104,5 @@ public:
 } // namespace
 }
 
-#endif	/* WILTON_WINSERVICE_CONFIG_HPP */
+#endif /* WILTON_WINSERVICE_CONFIG_HPP */
 
