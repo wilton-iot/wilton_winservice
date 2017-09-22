@@ -31,8 +31,9 @@ target_include_directories ( ${PROJECT_NAME} BEFORE PRIVATE
         ${WILTON_DIR}/core/include
         ${${PROJECT_NAME}_DEPS_PC_INCLUDE_DIRS} )
         
-target_link_libraries ( ${PROJECT_NAME}
+target_link_libraries ( ${PROJECT_NAME} PRIVATE
         wilton_core
-        ${${PROJECT_NAME}_DEPS_PC_STATIC_LIBRARIES} )
+        ${${PROJECT_NAME}_DEPS_PC_LIBRARIES}
+        wtsapi32 )
         
 set_property ( TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS "/manifest:no" )
