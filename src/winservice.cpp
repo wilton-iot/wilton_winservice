@@ -127,7 +127,7 @@ void init_wilton(wilton::launcher::winservice_config& sconf, char** envp) {
 }
 
 void init_signals() {
-    auto err_init = wilton_thread_initialize_signals();
+    auto err_init = wilton_signal_initialize();
     if (nullptr != err_init) {
         auto msg = TRACEMSG(err_init);
         wilton_free(err_init);
@@ -238,7 +238,7 @@ int main(int argc, char** argv, char** envp) {
         } else if (opts.direct) {
             init_signals();
             run_script(conf, "start");
-            wilton_thread_wait_for_signal();
+            wilton_signal_await();
             run_script(conf, "stop");
         } else { // SCM call            
             start_service_and_wait(conf);
