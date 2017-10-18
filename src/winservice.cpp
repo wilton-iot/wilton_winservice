@@ -124,6 +124,15 @@ void init_wilton(wilton::launcher::winservice_config& sconf, char** envp) {
         wilton_free(err);
         throw wilton::launcher::winservice_exception(msg);
     }
+    // load script engine
+    auto enginelib = "wilton_" + conf_obj["defaultScriptEngine"].as_string_nonempty_or_throw("defaultScriptEngine");
+    auto err_dyload = wilton_dyload(enginelib.c_str(), static_cast<int>(enginelib.length()),
+            nullptr, 0);
+    if (nullptr != err_dyload) {
+        auto msg = TRACEMSG(err);
+        wilton_free(err);
+        throw wilton::launcher::winservice_exception(msg);
+    }
 }
 
 void init_signals() {
@@ -145,9 +154,11 @@ void run_script(const wilton::launcher::winservice_config& conf, const std::stri
             return vec;
         }()}
     });
+    auto engine = conf.json_config["wilton"]["defaultScriptEngine"].as_string_nonempty_or_throw("defaultScriptEngine");
     char* out = nullptr;
     int out_len = 0;
-    auto err = wiltoncall_runscript_duktape(in.c_str(), static_cast<int> (in.length()), std::addressof(out), std::addressof(out_len));
+    auto err = wiltoncall_runscript(engine.c_str(), static_cast<int> (engine.length()), in.c_str(), static_cast<int> (in.length()),
+            std::addressof(out), std::addressof(out_len));
     if (nullptr != err) {
         auto msg = TRACEMSG(err);
         wilton_free(err);
