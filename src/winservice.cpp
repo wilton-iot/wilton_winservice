@@ -112,6 +112,15 @@ std::vector<sl::json::field> collect_env_vars(char** envp) {
     return res;
 }
 
+void dyload_module(const std::string& name) {
+    auto err_dyload = wilton_dyload(name.c_str(), static_cast<int>(name.length()), nullptr, 0);
+    if (nullptr != err_dyload) {
+        auto msg = TRACEMSG(err_dyload);
+        wilton_free(err_dyload);
+        throw wilton::support::exception(msg);
+    }
+}
+
 void init_wilton(wilton::launcher::winservice_config& sconf, char** envp) {
     auto& conf_obj = sconf.json_config.getattr_or_throw("wilton", "wilton");
     auto& conf_vec = conf_obj.as_object_or_throw("wilton");
@@ -126,16 +135,12 @@ void init_wilton(wilton::launcher::winservice_config& sconf, char** envp) {
     }
     // load script engine
     auto enginelib = "wilton_" + conf_obj["defaultScriptEngine"].as_string_nonempty_or_throw("defaultScriptEngine");
-    auto err_dyload = wilton_dyload(enginelib.c_str(), static_cast<int>(enginelib.length()),
-            nullptr, 0);
-    if (nullptr != err_dyload) {
-        auto msg = TRACEMSG(err);
-        wilton_free(err);
-        throw wilton::launcher::winservice_exception(msg);
-    }
+    dyload_module("wilton_logging");
+    dyload_module(enginelib);
 }
 
 void init_signals() {
+    dyload_module("wilton_signal");
     auto err_init = wilton_signal_initialize();
     if (nullptr != err_init) {
         auto msg = TRACEMSG(err_init);
