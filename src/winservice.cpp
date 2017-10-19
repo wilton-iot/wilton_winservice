@@ -21,6 +21,8 @@
 #include "staticlib/winservice.hpp"
 
 #include "wilton/wilton.h"
+#include "wilton/wilton_http.h"
+#include "wilton/wilton_signal.h"
 #include "wilton/wiltoncall.h"
 
 #include "winservice_config.hpp"
@@ -117,7 +119,7 @@ void dyload_module(const std::string& name) {
     if (nullptr != err_dyload) {
         auto msg = TRACEMSG(err_dyload);
         wilton_free(err_dyload);
-        throw wilton::support::exception(msg);
+        throw wilton::launcher::winservice_exception(msg);
     }
 }
 
