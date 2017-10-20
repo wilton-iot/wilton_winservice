@@ -138,6 +138,7 @@ void init_wilton(wilton::launcher::winservice_config& sconf, char** envp) {
     // load script engine
     auto enginelib = "wilton_" + conf_obj["defaultScriptEngine"].as_string_nonempty_or_throw("defaultScriptEngine");
     dyload_module("wilton_logging");
+    dyload_module("wilton_loader");
     dyload_module(enginelib);
 }
 
