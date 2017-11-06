@@ -45,7 +45,7 @@ std::string replace_appdir(const std::string& str, const std::string& appdir) {
     char* out = nullptr;
     int out_len = 0;
     auto err = wilton_render_mustache(str.c_str(), static_cast<int>(str.length()),
-            values.c_str(), values.length(), std::addressof(out), std::addressof(out_len));
+            values.c_str(), static_cast<int>(values.length()), std::addressof(out), std::addressof(out_len));
     if (nullptr != err) {
         auto msg = TRACEMSG(err);
         wilton_free(err);
