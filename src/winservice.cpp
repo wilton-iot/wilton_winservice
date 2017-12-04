@@ -21,7 +21,7 @@
 #include "staticlib/winservice.hpp"
 
 #include "wilton/wilton.h"
-#include "wilton/wilton_http.h"
+#include "wilton/wilton_server.h"
 #include "wilton/wilton_signal.h"
 #include "wilton/wiltoncall.h"
 
