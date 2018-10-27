@@ -37,7 +37,7 @@
 #include "staticlib/winservice.hpp"
 
 #include "wilton/wilton.h"
-#include "wilton/wilton_server.h"
+#include "wilton/wilton_mustache.h"
 #include "wilton/wilton_signal.h"
 #include "wilton/wiltoncall.h"
 
@@ -60,7 +60,7 @@ std::string replace_appdir(const std::string& str, const std::string& appdir) {
     });
     char* out = nullptr;
     int out_len = 0;
-    auto err = wilton_render_mustache(str.c_str(), static_cast<int>(str.length()),
+    auto err = wilton_mustache_render(str.c_str(), static_cast<int>(str.length()),
             values.c_str(), static_cast<int>(values.length()), std::addressof(out), std::addressof(out_len));
     if (nullptr != err) {
         auto msg = TRACEMSG(err);
